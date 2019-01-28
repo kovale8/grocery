@@ -1,0 +1,4 @@
+bin/
+.drivers
+.source
+*.swp
