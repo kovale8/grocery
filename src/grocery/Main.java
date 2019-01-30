@@ -11,7 +11,6 @@ public class Main {
 
     public static void main(String... args) {
         Inventory inventory = new Inventory();
-        inventory.printTypes();
-        System.out.println(inventory.getMilkSKU());
+        System.out.println(inventory.getSKU("milk"));
     }
 }

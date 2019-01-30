@@ -1,9 +1,5 @@
 package grocery;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
 public class Inventory {
@@ -26,7 +23,8 @@ public class Inventory {
     // Information for products file
     private static final String DELIMITER = "\\|";
     private static final Charset ENCODING = StandardCharsets.ISO_8859_1;
-    private static final Path PRODUCTS_FILE = Paths.get("resources", "products.txt");
+    private static final Path PRODUCTS_FILE =
+        Paths.get("resources", "products.txt");
 
     // Product table columns
     private static final int MANUFACTURER = 0;
@@ -69,13 +67,16 @@ public class Inventory {
         }
     }
 
-    public String getMilkSKU() {
-        return products.get("milk").get(0).getSKU();
-    }
+    public String getSKU(String type) {
+        List<Product> productList = products.get(type);
+        if (productList == null) {
+            System.out.println(String.format(
+                "No products of type: %s", type));
+            return "";
+        }
 
-    public void printTypes() {
-        for (final String type : products.keySet())
-            System.out.println(type);
+        int randIndex = ThreadLocalRandom.current().nextInt(productList.size());
+        return productList.get(randIndex).getSKU();
     }
 
     private static double parsePrice(String priceString) {
