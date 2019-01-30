@@ -41,9 +41,9 @@ public class Inventory {
                 // Skip the header line.
                 Files.lines(PRODUCTS_FILE, ENCODING).skip(1)) {
             fileStream.forEach(line -> {
-                final String[] cells = line.split(DELIMITER);
+                final String[] values = line.split(DELIMITER);
 
-                final String itemType = cells[ITEM_TYPE].toLowerCase();
+                final String itemType = values[ITEM_TYPE].toLowerCase();
                 final List<Product> productTypeList;
 
                 if (products.get(itemType) != null)
@@ -54,11 +54,11 @@ public class Inventory {
                 }
 
                 productTypeList.add(new Product(
-                    cells[MANUFACTURER],
-                    cells[PRODUCT_NAME],
-                    cells[SIZE],
-                    cells[SKU],
-                    parsePrice(cells[BASE_PRICE])
+                    values[MANUFACTURER],
+                    values[PRODUCT_NAME],
+                    values[SIZE],
+                    values[SKU],
+                    parsePrice(values[BASE_PRICE])
                 ));
             });
         }
@@ -67,19 +67,25 @@ public class Inventory {
         }
     }
 
-    public String getSKU(String type) {
-        List<Product> productList = products.get(type);
+    // TODO
+    public String getRandomItem() {
+        return getSKU("milk");
+    }
+
+    public String getSKU(final String type) {
+        final List<Product> productList = products.get(type);
         if (productList == null) {
             System.out.println(String.format(
                 "No products of type: %s", type));
             return "";
         }
 
-        int randIndex = ThreadLocalRandom.current().nextInt(productList.size());
+        final int randIndex =
+            ThreadLocalRandom.current().nextInt(productList.size());
         return productList.get(randIndex).getSKU();
     }
 
-    private static double parsePrice(String priceString) {
+    private static double parsePrice(final String priceString) {
         try {
             return CURRENCY_FORMAT.parse(priceString).doubleValue();
         }
