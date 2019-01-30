@@ -1,6 +1,8 @@
 package grocery;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,8 +19,10 @@ import java.util.stream.Stream;
 
 public class Inventory {
 
+    // Information for parsing and rounding price.
     private static final NumberFormat CURRENCY_FORMAT =
         NumberFormat.getCurrencyInstance();
+    private static final MathContext MATH_CONTEXT = new MathContext(3);
 
     // Information for products file
     private static final String DELIMITER = "\\|";
@@ -36,7 +40,7 @@ public class Inventory {
 
     private final Map<String, List<Product>> products = new HashMap<>();
 
-    public Inventory() {
+    public Inventory(final BigDecimal salesPriceMultiplier) {
         try (final Stream<String> fileStream =
                 // Skip the header line.
                 Files.lines(PRODUCTS_FILE, ENCODING).skip(1)) {
@@ -53,13 +57,21 @@ public class Inventory {
                     products.put(itemType, productTypeList);
                 }
 
-                productTypeList.add(new Product(
-                    values[MANUFACTURER],
-                    values[PRODUCT_NAME],
-                    values[SIZE],
-                    values[SKU],
-                    parsePrice(values[BASE_PRICE])
-                ));
+                // Extract the raw price decimal from the currency string.
+                String priceString = values[BASE_PRICE];
+                try {
+                    priceString = CURRENCY_FORMAT.parse(priceString).toString();
+                }
+                catch (ParseException ex) {
+                    System.out.println(String.format(
+                    "Could not parse currency: %s", priceString));
+                }
+
+                // Determine sales price rounded to two decimal places.
+                BigDecimal price = new BigDecimal(priceString);
+                price = price.multiply(salesPriceMultiplier, MATH_CONTEXT);
+
+                productTypeList.add(new Product(values[SKU], price));
             });
         }
         catch (IOException ex) {
@@ -68,32 +80,20 @@ public class Inventory {
     }
 
     // TODO
-    public String getRandomItem() {
-        return getSKU("milk");
+    public Product getItem() {
+        return getItem("milk");
     }
 
-    public String getSKU(final String type) {
+    public Product getItem(final String type) {
         final List<Product> productList = products.get(type);
         if (productList == null) {
             System.out.println(String.format(
                 "No products of type: %s", type));
-            return "";
+            return Product.NULL_PRODUCT;
         }
 
         final int randIndex =
             ThreadLocalRandom.current().nextInt(productList.size());
-        return productList.get(randIndex).getSKU();
-    }
-
-    private static double parsePrice(final String priceString) {
-        try {
-            return CURRENCY_FORMAT.parse(priceString).doubleValue();
-        }
-        catch (ParseException ex) {
-            System.out.println(String.format(
-                "Could not parse currency: %s", priceString));
-        }
-
-        return Double.NaN;
+        return productList.get(randIndex);
     }
 }

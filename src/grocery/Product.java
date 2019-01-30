@@ -1,43 +1,24 @@
 package grocery;
 
+import java.math.BigDecimal;
+
 public class Product {
 
-    private String manufacturer;
-    private String name;
-    private String size;
+    public static final Product NULL_PRODUCT = new Product("", BigDecimal.ZERO);
+
     private String sku;
-    private double basePrice;
+    private BigDecimal price;
 
-    public Product(
-            String manufacturer,
-            String name,
-            String size,
-            String sku,
-            double basePrice) {
-        this.manufacturer = manufacturer;
-        this.name = name;
-        this.size = size;
+    public Product(final String sku, final BigDecimal price) {
         this.sku = sku;
-        this.basePrice = basePrice;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSize() {
-        return size;
+        this.price = price;
     }
 
     public String getSKU() {
         return sku;
     }
 
-    public double basePrice() {
-        return basePrice;
+    public BigDecimal getPrice() {
+        return price;
     }
 }

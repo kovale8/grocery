@@ -1,19 +1,20 @@
 package grocery;
 
+import java.math.BigDecimal;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
     private static final int CUSTOMERS_LOW = 1100;
     private static final int CUSTOMERS_HIGH = 1150;
-    private static final double PRICE_MULTIPLIER = 1.07;
+    private static final BigDecimal PRICE_MULTIPLIER = new BigDecimal("1.07");
     private static final String START_DATE = "20170101";
     private static final int MAX_ITEMS = 90;
     private static final int WEEKEND_INCREASE = 50;
     private static final int DAYS_TO_RUN = 1;
 
     public static void main(final String... args) {
-        final Inventory inventory = new Inventory();
+        final Inventory inventory = new Inventory(PRICE_MULTIPLIER);
         final Date date = new Date(START_DATE);
         final Records records = new Records();
 
@@ -26,12 +27,13 @@ public class Main {
                 final int itemTotal = randRange(1, MAX_ITEMS);
 
                 for (int itemCount = 0; itemCount <= itemTotal; itemCount++) {
-                    String itemSKU = inventory.getRandomItem();
+                    Product item = inventory.getItem();
 
                     records.writeRecord(
                         date.toString(),
                         Integer.toString(customer),
-                        itemSKU
+                        item.getSKU(),
+                        item.getPrice().toString()
                     );
                 }
             }
