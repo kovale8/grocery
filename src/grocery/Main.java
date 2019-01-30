@@ -50,34 +50,34 @@ public class Main {
                 itemCount = 0;
 
                 if (chance(MILK)) {
-                    buyItem("milk");
+                    buyItem(ConstraintType.Milk);
 
                     if (chance(CEREAL_WITH_MILK))
-                        buyItem("cereal");
+                        buyItem(ConstraintType.Cereal);
                 }
                 else if (chance(CEREAL_NO_MILK))
-                    buyItem("cereal");
+                    buyItem(ConstraintType.Cereal);
 
                 if (chance(BABY_FOOD)) {
-                    buyItem("baby food");
+                    buyItem(ConstraintType.BabyFood);
 
                     if (chance(DIAPERS_WITH_BABY_FOOD))
-                        buyItem("diapers");
+                        buyItem(ConstraintType.Diapers);
                 }
                 else if (chance(DIAPERS_NO_BABY_FOOD))
-                    buyItem("diapers");
+                    buyItem(ConstraintType.Diapers);
 
                 if (chance(BREAD))
-                    buyItem("bread");
+                    buyItem(ConstraintType.Bread);
 
                 if (chance(PEANUT_BUTTER)) {
-                    buyItem("peanut butter");
+                    buyItem(ConstraintType.PeanutButter);
 
                     if (chance(JAM_WITH_PEANUT_BUTTER))
-                        buyItem("jelly/jam");
+                        buyItem(ConstraintType.Jam);
                 }
                 else if (chance(JAM_NO_PEANUT_BUTTER))
-                    buyItem("jelly/jam");
+                    buyItem(ConstraintType.Jam);
 
                 // Buy random products to fill item total.
                 while (itemCount <= itemTotal)
@@ -90,8 +90,8 @@ public class Main {
         recordSale(inventory.getItem());
     }
 
-    private static void buyItem(final String type) {
-        recordSale(inventory.getItem(type));
+    private static void buyItem(final ConstraintType type) {
+        recordSale(inventory.getItem(type.toString()));
     }
 
     private static boolean chance(final int probability) {

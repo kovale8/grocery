@@ -81,7 +81,7 @@ public class Inventory {
 
     // TODO
     public Product getItem() {
-        return getItem("milk");
+        return Product.NULL_PRODUCT;
     }
 
     public Product getItem(final String type) {
