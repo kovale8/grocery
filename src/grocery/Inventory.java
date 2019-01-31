@@ -19,6 +19,26 @@ import java.util.stream.Stream;
 
 public class Inventory {
 
+    private static enum Header {
+
+        Manufacturer(0),
+        ProductName(1),
+        Size(2),
+        ItemType(3),
+        Sku(4),
+        BasePrice(5);
+
+        private int column;
+
+        Header(final int column) {
+            this.column = column;
+        }
+
+        public int getColumn() {
+            return column;
+        }
+    }
+
     // Information for parsing and rounding price.
     private static final NumberFormat CURRENCY_FORMAT =
         NumberFormat.getCurrencyInstance();
@@ -30,14 +50,6 @@ public class Inventory {
     private static final Path PRODUCTS_FILE =
         Paths.get("resources", "products.txt");
 
-    // Product table columns
-    private static final int MANUFACTURER = 0;
-    private static final int PRODUCT_NAME = 1;
-    private static final int SIZE = 2;
-    private static final int ITEM_TYPE = 3;
-    private static final int SKU = 4;
-    private static final int BASE_PRICE = 5;
-
     private final Map<String, List<Product>> products = new HashMap<>();
 
     public Inventory(final BigDecimal salesPriceMultiplier) {
@@ -47,10 +59,11 @@ public class Inventory {
             fileStream.forEach(line -> {
                 final String[] values = line.split(DELIMITER);
 
-                final String itemType = values[ITEM_TYPE].toLowerCase();
                 final List<Product> productTypeList;
+                final String itemType =
+                    values[Header.ItemType.getColumn()].toLowerCase();
 
-                if (products.get(itemType) != null)
+                if (products.containsKey(itemType))
                     productTypeList = products.get(itemType);
                 else {
                     productTypeList = new ArrayList<Product>();
@@ -58,7 +71,7 @@ public class Inventory {
                 }
 
                 // Extract the raw price decimal from the currency string.
-                String priceString = values[BASE_PRICE];
+                String priceString = values[Header.BasePrice.getColumn()];
                 try {
                     priceString = CURRENCY_FORMAT.parse(priceString).toString();
                 }
@@ -71,7 +84,10 @@ public class Inventory {
                 BigDecimal price = new BigDecimal(priceString);
                 price = price.multiply(salesPriceMultiplier, MATH_CONTEXT);
 
-                productTypeList.add(new Product(values[SKU], price));
+                productTypeList.add(new Product(
+                    values[Header.Sku.getColumn()],
+                    price
+                ));
             });
         }
         catch (IOException ex) {
