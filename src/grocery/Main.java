@@ -91,7 +91,7 @@ public class Main {
     }
 
     private static void buyItem(final ConstraintType type) {
-        recordSale(inventory.getItem(type.toString()));
+        recordSale(inventory.getItem(type));
     }
 
     private static boolean chance(final int probability) {

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Inventory {
@@ -51,6 +52,7 @@ public class Inventory {
         Paths.get("resources", "products.txt");
 
     private final Map<String, List<Product>> products = new HashMap<>();
+    private List<Product> miscProductsList;
 
     public Inventory(final BigDecimal salesPriceMultiplier) {
         try (final Stream<String> fileStream =
@@ -93,21 +95,24 @@ public class Inventory {
         catch (IOException ex) {
             ex.printStackTrace();
         }
+
+        miscProductsList = products
+            .keySet()
+            .stream()
+            .filter(type -> !ConstraintType.contains(type))
+            .map(type -> products.get(type))
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
     }
 
-    // TODO
     public Product getItem() {
-        return Product.NULL_PRODUCT;
+        final int randIndex =
+            ThreadLocalRandom.current().nextInt(miscProductsList.size());
+        return miscProductsList.get(randIndex);
     }
 
-    public Product getItem(final String type) {
-        final List<Product> productList = products.get(type);
-        if (productList == null) {
-            System.out.println(String.format(
-                "No products of type: %s", type));
-            return Product.NULL_PRODUCT;
-        }
-
+    public Product getItem(final ConstraintType type) {
+        final List<Product> productList = products.get(type.getName());
         final int randIndex =
             ThreadLocalRandom.current().nextInt(productList.size());
         return productList.get(randIndex);

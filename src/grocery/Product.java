@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 public class Product {
 
-    public static final Product NULL_PRODUCT = new Product("", BigDecimal.ZERO);
-
     private String sku;
     private BigDecimal price;
 
