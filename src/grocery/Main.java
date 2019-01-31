@@ -1,7 +1,6 @@
 package grocery;
 
 import java.math.BigDecimal;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
@@ -38,7 +37,7 @@ public class Main {
 
     public static void main(final String... args) {
         for (int day = 1; day <= DAYS_TO_RUN; day++, date.nextDay()) {
-            int customerTotal = randRange(CUSTOMERS_LOW, CUSTOMERS_HIGH);
+            int customerTotal = Random.randRange(CUSTOMERS_LOW, CUSTOMERS_HIGH);
             if (date.isWeekend())
                 customerTotal += WEEKEND_INCREASE;
 
@@ -46,37 +45,37 @@ public class Main {
                     customerCount = 1;
                     customerCount <= customerTotal;
                     customerCount++) {
-                final int itemTotal = randRange(1, MAX_ITEMS);
+                final int itemTotal = Random.randRange(1, MAX_ITEMS);
                 itemCount = 0;
 
-                if (chance(MILK)) {
+                if (Random.chance(MILK)) {
                     buyItem(ConstraintType.Milk);
 
-                    if (chance(CEREAL_WITH_MILK))
+                    if (Random.chance(CEREAL_WITH_MILK))
                         buyItem(ConstraintType.Cereal);
                 }
-                else if (chance(CEREAL_NO_MILK))
+                else if (Random.chance(CEREAL_NO_MILK))
                     buyItem(ConstraintType.Cereal);
 
-                if (chance(BABY_FOOD)) {
+                if (Random.chance(BABY_FOOD)) {
                     buyItem(ConstraintType.BabyFood);
 
-                    if (chance(DIAPERS_WITH_BABY_FOOD))
+                    if (Random.chance(DIAPERS_WITH_BABY_FOOD))
                         buyItem(ConstraintType.Diapers);
                 }
-                else if (chance(DIAPERS_NO_BABY_FOOD))
+                else if (Random.chance(DIAPERS_NO_BABY_FOOD))
                     buyItem(ConstraintType.Diapers);
 
-                if (chance(BREAD))
+                if (Random.chance(BREAD))
                     buyItem(ConstraintType.Bread);
 
-                if (chance(PEANUT_BUTTER)) {
+                if (Random.chance(PEANUT_BUTTER)) {
                     buyItem(ConstraintType.PeanutButter);
 
-                    if (chance(JAM_WITH_PEANUT_BUTTER))
+                    if (Random.chance(JAM_WITH_PEANUT_BUTTER))
                         buyItem(ConstraintType.Jam);
                 }
-                else if (chance(JAM_NO_PEANUT_BUTTER))
+                else if (Random.chance(JAM_NO_PEANUT_BUTTER))
                     buyItem(ConstraintType.Jam);
 
                 // Buy random products to fill item total.
@@ -92,14 +91,6 @@ public class Main {
 
     private static void buyItem(final ConstraintType type) {
         recordSale(inventory.getItem(type));
-    }
-
-    private static boolean chance(final int probability) {
-        return randRange(1, 100) <= probability;
-    }
-
-    private static int randRange(final int low, final int high) {
-        return ThreadLocalRandom.current().nextInt(low, high + 1);
     }
 
     private static void recordSale(final Product product) {
