@@ -4,13 +4,20 @@ import java.math.BigDecimal;
 
 public class Main {
 
+    // Customer properties
     private static final int CUSTOMERS_LOW = 1100;
     private static final int CUSTOMERS_HIGH = 1150;
-    private static final BigDecimal PRICE_MULTIPLIER = new BigDecimal("1.07");
-    private static final String START_DATE = "20170101";
-    private static final int MAX_ITEMS = 90;
     private static final int WEEKEND_INCREASE = 50;
+    private static final int MAX_ITEMS = 90;
+
+    // Product properties
+    private static final BigDecimal PRICE_MULTIPLIER = new BigDecimal("1.07");
+
+    // Date properties
+    private static final String START_DATE = "20170101";
     private static final int DAYS_TO_RUN = 365;
+
+    // User properties
     private static final String OUTPUT_FILE = "sales.txt";
 
     // Item probabilities
@@ -49,6 +56,7 @@ public class Main {
                 final int itemTotal = Random.randRange(1, MAX_ITEMS);
                 itemCount = 0;
 
+                // Handle item probability constraints.
                 if (Random.chance(MILK)) {
                     buyItem(ConstraintType.Milk);
 

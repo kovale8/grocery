@@ -13,23 +13,20 @@ public class RecordWriter {
     private BufferedWriter writer;
     private Path target;
 
-    public RecordWriter(final String outFilename) {
+    public RecordWriter(final String filename) {
         final Path homedir = Paths.get(System.getProperty("user.home"));
         final Path desktop = homedir.resolve("Desktop");
 
         if (Files.isDirectory(desktop))
-            target = desktop.resolve(outFilename);
+            target = desktop.resolve(filename);
         else
-            target = desktop.resolve(outFilename);
+            target = homedir.resolve(filename);
 
         try {
             writer = Files.newBufferedWriter(target);
         }
         catch (IOException ex) {
-            System.out.println(String.format(
-                "Problem opening or creating file: %s", target));
-            ex.printStackTrace();
-            System.exit(1);
+            printError("Problem opening or creating file", ex);
         }
     }
 
@@ -38,24 +35,23 @@ public class RecordWriter {
             writer.close();
         }
         catch (IOException ex) {
-            System.out.println(String.format(
-                "Problem closing file: %s", target));
-            ex.printStackTrace();
+            printError("Problem closing file", ex);
         }
     }
 
     public void writeRecord(final String... values) {
-        final String record = String.join(DELIMITER, values);
-
         try {
-            writer.write(record);
+            writer.write(String.join(DELIMITER, values));
             writer.newLine();
         }
         catch (IOException ex) {
-            System.out.println(String.format(
-                "Problem writing to file: %s", target));
-            ex.printStackTrace();
-            System.exit(1);
+            printError("Problem writing to file", ex);
         }
+    }
+
+    private void printError(final String issue, final Exception ex) {
+        System.out.println(String.format("%s: %s", issue, target));
+        ex.printStackTrace();
+        System.exit(1);
     }
 }
