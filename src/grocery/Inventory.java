@@ -51,7 +51,7 @@ public class Inventory {
         Paths.get("resources", "products.txt");
 
     private final Map<String, List<Product>> products = new HashMap<>();
-    private final List<Product> miscProductsList = new ArrayList<>();
+    private List<Product> miscProductsList = new ArrayList<>();
     private BigDecimal salesPriceMultiplier;
 
     public Inventory(final BigDecimal salesPriceMultiplier) {
@@ -113,12 +113,11 @@ public class Inventory {
     }
 
     private void populateMiscProducts() {
-        miscProductsList.addAll(products
+        miscProductsList = products
             .keySet()
             .stream()
             .filter(type -> !ConstraintType.contains(type))
-            .map(type -> products.get(type))
-            .flatMap(List::stream)
-            .collect(Collectors.toList()));
+            .flatMap(type -> products.get(type).stream())
+            .collect(Collectors.toList());
     }
 }

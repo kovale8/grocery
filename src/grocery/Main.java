@@ -10,7 +10,8 @@ public class Main {
     private static final String START_DATE = "20170101";
     private static final int MAX_ITEMS = 90;
     private static final int WEEKEND_INCREASE = 50;
-    private static final int DAYS_TO_RUN = 1;
+    private static final int DAYS_TO_RUN = 365;
+    private static final String OUTPUT_FILE = "sales.txt";
 
     // Item probabilities
     // Milk
@@ -30,7 +31,7 @@ public class Main {
 
     private static final Inventory inventory = new Inventory(PRICE_MULTIPLIER);
     private static final Date date = new Date(START_DATE);
-    private static final Records records = new Records();
+    private static final RecordWriter records = new RecordWriter(OUTPUT_FILE);
 
     private static int customerCount;
     private static int itemCount;
@@ -83,6 +84,8 @@ public class Main {
                     buyItem();
             }
         }
+
+        records.close();
     }
 
     private static void buyItem() {
