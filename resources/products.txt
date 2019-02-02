@@ -1,4 +1,4 @@
-Manufacturer|Product Name|Size|itemType|SKU|BasePrice
+Manufacturer|Product Name|Size|Item Type|SKU|Base Price
 Zatarains|Jambalaya Rice Mix|12 oz|Rice/Rice Mix|42081001|$2.49
 Zatarains|Jambalaya Rice Mix|8 oz|Rice/Rice Mix|42082001|$1.79
 Yucatan|Guacamole Regular|8 oz||42083001|$3.99
