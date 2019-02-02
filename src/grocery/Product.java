@@ -1,13 +1,11 @@
 package grocery;
 
-import java.math.BigDecimal;
-
 public class Product {
 
     private String sku;
-    private BigDecimal price;
+    private Cost price;
 
-    public Product(final String sku, final BigDecimal price) {
+    public Product(final String sku, final Cost price) {
         this.sku = sku;
         this.price = price;
     }
@@ -16,7 +14,7 @@ public class Product {
         return sku;
     }
 
-    public BigDecimal getPrice() {
+    public Cost getPrice() {
         return price;
     }
 }

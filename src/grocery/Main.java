@@ -1,7 +1,5 @@
 package grocery;
 
-import java.math.BigDecimal;
-
 public class Main {
 
     // Customer properties
@@ -11,7 +9,7 @@ public class Main {
     private static final int MAX_ITEMS = 90;
 
     // Product properties
-    private static final BigDecimal PRICE_MULTIPLIER = new BigDecimal("1.07");
+    private static final String PRICE_MULTIPLIER = "1.07";
 
     // Date properties
     private static final String START_DATE = "20170101";

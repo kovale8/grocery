@@ -1,9 +1,6 @@
 package grocery;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +11,6 @@ public class Inventory {
 
     // Information for products file
     private static final String PRODUCTS_FILENAME = "products.txt";
-
-    // Round prices to two decimal places.
-    private static final int PRICE_PRECISION = 3;
 
     // Relevant product table headers
     private static final String BASE_PRICE = "Base Price";
@@ -30,8 +24,8 @@ public class Inventory {
     // Used to calculate product sales price from base price
     private BigDecimal salesPriceMultiplier;
 
-    public Inventory(final BigDecimal salesPriceMultiplier) {
-        this.salesPriceMultiplier = salesPriceMultiplier;
+    public Inventory(final String salesPriceMultiplier) {
+        this.salesPriceMultiplier = new BigDecimal(salesPriceMultiplier);
 
         buildInventoryFromFile();
         populateMiscProducts();
@@ -57,26 +51,10 @@ public class Inventory {
                 products.put(itemType, productTypeList);
             }
 
-            // Extract the raw price decimal from the currency string.
-            String priceString = record.get(BASE_PRICE);
-            try {
-                priceString = NumberFormat
-                    .getCurrencyInstance()
-                    .parse(priceString)
-                    .toString();
-            }
-            catch (ParseException ex) {
-                System.out.println(String.format(
-                    "Could not parse currency: %s", priceString));
-                ex.printStackTrace();
-                System.exit(1);
-            }
+            final Cost salesPrice = new Cost(record.get(BASE_PRICE))
+                .multiply(salesPriceMultiplier);
 
-            // Determine sales price rounded to two decimal places.
-            final BigDecimal price = new BigDecimal(priceString).multiply(
-                salesPriceMultiplier, new MathContext(PRICE_PRECISION));
-
-            productTypeList.add(new Product(record.get(SKU), price));
+            productTypeList.add(new Product(record.get(SKU), salesPrice));
         });
     }
 
