@@ -13,9 +13,9 @@ public class Inventory {
     private static final String PRODUCTS_FILENAME = "products.txt";
 
     // Relevant product table headers
-    private static final String BASE_PRICE = "Base Price";
-    private static final String ITEM_TYPE = "Item Type";
-    private static final String SKU = "SKU";
+    private static final String BASE_PRICE = "base_price";
+    private static final String ITEM_TYPE = "item_type";
+    private static final String SKU = "sku";
 
     // Mapping of all products by item type
     private final Map<String, List<Product>> products = new HashMap<>();
