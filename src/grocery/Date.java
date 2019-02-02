@@ -27,7 +27,7 @@ public class Date {
     }
 
     public void nextDay() {
-        calendar.roll(Calendar.DATE, true);
+        calendar.add(Calendar.DATE, 1);
     }
 
     @Override
