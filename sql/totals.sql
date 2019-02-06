@@ -1,3 +1,6 @@
+-- Sqlite script to calculate summaries for the grocery chain data.
+-- It relies on two tables (sales and product). See `sql/create.sql`.
+
 -- Number of customers
 SELECT sum("customer_count") AS 'Total Customers'
 FROM (
