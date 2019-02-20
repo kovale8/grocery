@@ -2,20 +2,23 @@ package grocery;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public enum ConstraintType {
 
-    Milk("milk"),
-    Cereal("cereal"),
-    BabyFood("baby food"),
-    Diapers("diapers"),
-    Bread("bread"),
-    PeanutButter("peanut butter"),
-    Jam("jelly/jam");
+    Milk("milk", 1197),
+    Cereal("cereal", 1059),
+    BabyFood("baby food", 537),
+    Diapers("diapers", 570),
+    Bread("bread", 1596),
+    PeanutButter("peanut butter", 240),
+    Jam("jelly/jam", 462);
 
     private static final List<String> typeList;
+    private static final Map<String, ConstraintType> typeMap = new HashMap<>();
 
     static {
         final List<String> values = Arrays
@@ -25,19 +28,32 @@ public enum ConstraintType {
             .collect(Collectors.toList());
         Collections.sort(values);
         typeList = Collections.unmodifiableList(values);
+
+        for (final ConstraintType type : values())
+            typeMap.put(type.getName(), type);
     }
 
     public static boolean contains(final String searchKey) {
         return Collections.binarySearch(typeList, searchKey) >= 0;
     }
 
-    private String typeName;
+    public static ConstraintType find(final String searchKey) {
+        return typeMap.get(searchKey);
+    }
 
-    ConstraintType(final String typeName) {
+    private final String typeName;
+    private final int stockTarget;
+
+    ConstraintType(final String typeName, final int stockTarget) {
         this.typeName = typeName;
+        this.stockTarget = stockTarget;
     }
 
     public String getName() {
         return typeName;
+    }
+
+    public int getStockTarget() {
+        return stockTarget;
     }
 }

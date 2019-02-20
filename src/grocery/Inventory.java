@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 public class Inventory {
 
+    // TODO Change this placeholder value.
+    private static final int DEFAULT_STOCK_TARGET = 100;
+
     // Information for products file
     private static final String PRODUCTS_FILENAME = "products.txt";
 
@@ -54,7 +57,16 @@ public class Inventory {
             final Cost salesPrice = new Cost(record.get(BASE_PRICE))
                 .multiply(salesPriceMultiplier);
 
-            productTypeList.add(new Product(record.get(SKU), salesPrice));
+            final int stockTarget = ConstraintType.contains(itemType) ?
+                ConstraintType.find(itemType).getStockTarget() :
+                DEFAULT_STOCK_TARGET;
+
+            productTypeList.add(new Product(
+                record.get(SKU),
+                itemType,
+                salesPrice,
+                stockTarget
+            ));
         });
     }
 
