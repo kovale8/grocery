@@ -106,10 +106,12 @@ public class Main {
         itemCount++;
 
         records.writeRecord(
-            date.toString(),
-            Integer.toString(customerCount),
+            date,
+            customerCount,
             product.getSKU(),
-            product.getPrice().toString()
+            product.getPrice(),
+            product.getStock(),
+            product.getCasesOrdered()
         );
     }
 }
