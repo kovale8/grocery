@@ -42,6 +42,10 @@ public class Product {
         return type;
     }
 
+    public boolean isInStock() {
+        return stock > 0;
+    }
+
     public boolean purchase() {
         if (stock == 0)
             return false;

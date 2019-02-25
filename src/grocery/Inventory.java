@@ -23,9 +23,9 @@ public class Inventory {
     // Mapping of all products by item type
     private final Map<String, List<Product>> products = new HashMap<>();
     // List of all products not of the types represented by ConstraintType
-    private List<Product> miscProductsList;
+    private final List<Product> miscProductsList;
     // Used to calculate product sales price from base price
-    private BigDecimal salesPriceMultiplier;
+    private final BigDecimal salesPriceMultiplier;
 
     public Inventory(final String salesPriceMultiplier) {
         this.salesPriceMultiplier = new BigDecimal(salesPriceMultiplier);
@@ -35,11 +35,16 @@ public class Inventory {
     }
 
     public Product getItem() {
-        return Random.randomElement(miscProductsList);
+        final Product randomProduct = Random.randomElement(miscProductsList);
+
+        if (randomProduct.isInStock())
+            return randomProduct;
+
+        return getItem(randomProduct.getType());
     }
 
     public Product getItem(final ConstraintType type) {
-        return Random.randomElement(products.get(type.getName()));
+        return getItem(type.getName());
     }
 
     private void buildInventoryFromFile() {
@@ -68,6 +73,19 @@ public class Inventory {
                 stockTarget
             ));
         });
+    }
+
+    private Product getItem(final String type) {
+        final List<Product> productsOfType = products.get(type)
+            .filter(Product::isInStock);
+
+        if (productsOfType.isEmpty()) {
+            System.out.println(String.format(
+                "Products of type %s are out of stock", type));
+            System.exit(1);
+        }
+
+        return Random.randomElement(productsOfType);
     }
 
     private void populateMiscProducts() {
