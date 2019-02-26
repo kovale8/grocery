@@ -43,6 +43,8 @@ public class Main {
 
     public static void main(final String... args) {
         for (int day = 1; day <= DAYS_TO_RUN; day++, date.nextDay()) {
+            inventory.restock(date);
+
             int customerTotal = Random.randRange(CUSTOMERS_LOW, CUSTOMERS_HIGH);
             if (date.isWeekend())
                 customerTotal += WEEKEND_INCREASE;

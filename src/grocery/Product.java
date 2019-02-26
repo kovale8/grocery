@@ -7,8 +7,8 @@ public class Product {
     private final String sku;
     private final String type;
     private final Cost price;
-    private int casesOrdered;
-    private int stock;
+    private int casesOrdered = 0;
+    private int stock = 0;
 
     public Product(final String sku, final String type, final Cost price,
             final int stockTarget) {
@@ -16,10 +16,7 @@ public class Product {
         this.type = type;
         this.price = price;
 
-        casesOrdered = stockTarget / ITEMS_PER_CASE;
-        if (stockTarget % ITEMS_PER_CASE != 0)
-            casesOrdered++;
-        stock = casesOrdered * ITEMS_PER_CASE;
+        restock(stockTarget);
     }
 
     public int getCasesOrdered() {
@@ -53,5 +50,16 @@ public class Product {
                 "Product out of stock: (SKU: %s)", sku));
             System.exit(1);
         }
+    }
+
+    public void restock(final int stockTarget) {
+        final int countToOrder = stockTarget - stock;
+        if (countToOrder <= 0) return;
+
+        int cases = countToOrder / ITEMS_PER_CASE;
+        if (countToOrder % ITEMS_PER_CASE != 0) cases++;
+
+        stock += cases * ITEMS_PER_CASE;
+        casesOrdered += cases;
     }
 }
