@@ -9,8 +9,7 @@ import java.util.stream.Collectors;
 
 public class Inventory {
 
-    // TODO Change this placeholder value.
-    private static final int DEFAULT_STOCK_TARGET = 100;
+    private static final int DEFAULT_STOCK_TARGET = 1680;
 
     // Information for products file
     private static final String PRODUCTS_FILENAME = "products.txt";

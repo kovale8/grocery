@@ -47,8 +47,7 @@ public class Product {
     }
 
     public void purchase() {
-        if (isInStock())
-            stock--;
+        if (isInStock()) stock--;
         else {
             System.out.println(String.format(
                 "Product out of stock: (SKU: %s)", sku));
