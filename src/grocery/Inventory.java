@@ -31,7 +31,7 @@ public class Inventory {
         this.salesPriceMultiplier = new BigDecimal(salesPriceMultiplier);
 
         buildInventoryFromFile();
-        populateMiscProducts();
+        miscProductsList = getMiscProducts();
     }
 
     public Product getItem() {
@@ -76,20 +76,23 @@ public class Inventory {
     }
 
     private Product getItem(final String type) {
-        final List<Product> productsOfType = products.get(type)
-            .filter(Product::isInStock);
+        final List<Product> productsOfType = products
+            .get(type)
+            .stream()
+            .filter(p -> p.isInStock())
+            .collect(Collectors.toList());
 
         if (productsOfType.isEmpty()) {
             System.out.println(String.format(
-                "Products of type %s are out of stock", type));
+                "Products of type '%s' are out of stock", type));
             System.exit(1);
         }
 
         return Random.randomElement(productsOfType);
     }
 
-    private void populateMiscProducts() {
-        miscProductsList = products
+    private List<Product> getMiscProducts() {
+        return products
             .keySet()
             .stream()
             .filter(type -> !ConstraintType.contains(type))

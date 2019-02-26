@@ -103,6 +103,7 @@ public class Main {
     }
 
     private static void recordSale(final Product product) {
+        product.purchase();
         itemCount++;
 
         records.writeRecord(
