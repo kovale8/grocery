@@ -10,13 +10,10 @@ public class Product {
     private int casesOrdered = 0;
     private int stock = 0;
 
-    public Product(final String sku, final String type, final Cost price,
-            final int stockTarget) {
+    public Product(final String sku, final String type, final Cost price) {
         this.sku = sku;
         this.type = type;
         this.price = price;
-
-        restock(stockTarget);
     }
 
     public int getCasesOrdered() {

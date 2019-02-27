@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class Inventory {
 
-    private static final int DEFAULT_STOCK_TARGET = 1680;
+    private static final int DEFAULT_STOCK_TARGET = 100752;
     private static final List<Integer> DELIVERY_DAYS = Arrays.asList(
         Calendar.TUESDAY,
         Calendar.THURSDAY,
@@ -38,6 +38,7 @@ public class Inventory {
 
         buildInventoryFromFile();
         miscProductsList = getMiscProducts();
+        restockAll();
     }
 
     public Product getItem() {
@@ -81,8 +82,7 @@ public class Inventory {
             productTypeList.add(new Product(
                 record.get(SKU),
                 itemType,
-                salesPrice,
-                getStockTarget(itemType)
+                salesPrice
             ));
         });
     }
@@ -113,8 +113,24 @@ public class Inventory {
     }
 
     private int getStockTarget(final String itemType) {
-        return ConstraintType.contains(itemType) ?
-            ConstraintType.find(itemType).getStockTarget() : DEFAULT_STOCK_TARGET;
+        int stockTarget;
+        int productCount;
+
+        if (ConstraintType.contains(itemType)) {
+            stockTarget = ConstraintType.find(itemType).getStockTarget();
+            productCount = products.get(itemType).size();
+        }
+        else {
+            stockTarget = DEFAULT_STOCK_TARGET;
+            productCount = miscProductsList.size();
+        }
+
+        return stockTarget / productCount;
+    }
+
+    private void restockAll() {
+        for (final String type : products.keySet())
+            restockByType(type);
     }
 
     private void restockByType(final String itemType) {
