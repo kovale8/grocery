@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 public enum ConstraintType {
 
     Milk("milk", 1197),
-    Cereal("cereal", 1059),
-    BabyFood("baby food", 537),
+    Cereal("cereal", 1248),
+    BabyFood("baby food", 681),
     Diapers("diapers", 570),
-    Bread("bread", 1596),
-    PeanutButter("peanut butter", 240),
+    Bread("bread", 1710),
+    PeanutButter("peanut butter", 342),
     Jam("jelly/jam", 462);
 
     private static final List<String> typeList;

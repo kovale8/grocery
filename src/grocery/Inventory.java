@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class Inventory {
 
-    private static final int DEFAULT_STOCK_TARGET = 100752;
+    private static final int DEFAULT_STOCK_TARGET = 151623;
     private static final List<Integer> DELIVERY_DAYS = Arrays.asList(
         Calendar.TUESDAY,
         Calendar.THURSDAY,
