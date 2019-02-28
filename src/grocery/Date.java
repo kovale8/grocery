@@ -21,8 +21,12 @@ public class Date {
         }
     }
 
+    public int getDayOfWeek() {
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
     public boolean isWeekend() {
-        final int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        final int dayOfWeek = getDayOfWeek();
         return dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
     }
 

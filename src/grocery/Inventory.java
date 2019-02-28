@@ -1,13 +1,23 @@
 package grocery;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Inventory {
+
+    private static final int DEFAULT_STOCK_TARGET = 151623;
+    private static final List<Integer> DELIVERY_DAYS = Arrays.asList(
+        Calendar.TUESDAY,
+        Calendar.THURSDAY,
+        Calendar.SATURDAY
+    );
 
     // Information for products file
     private static final String PRODUCTS_FILENAME = "products.txt";
@@ -20,23 +30,39 @@ public class Inventory {
     // Mapping of all products by item type
     private final Map<String, List<Product>> products = new HashMap<>();
     // List of all products not of the types represented by ConstraintType
-    private List<Product> miscProductsList;
+    private final List<Product> miscProductsList;
     // Used to calculate product sales price from base price
-    private BigDecimal salesPriceMultiplier;
+    private final BigDecimal salesPriceMultiplier;
 
     public Inventory(final String salesPriceMultiplier) {
         this.salesPriceMultiplier = new BigDecimal(salesPriceMultiplier);
 
         buildInventoryFromFile();
-        populateMiscProducts();
+        miscProductsList = getMiscProducts();
+        restockAll();
     }
 
-    public Product getItem() {
-        return Random.randomElement(miscProductsList);
+    public Optional<Product> getItem() {
+        final Product randomProduct = Random.randomElement(miscProductsList);
+
+        if (randomProduct.isInStock())
+            return Optional.of(randomProduct);
+
+        return getItem(randomProduct.getType());
     }
 
-    public Product getItem(final ConstraintType type) {
-        return Random.randomElement(products.get(type.getName()));
+    public Optional<Product> getItem(final ConstraintType type) {
+        return getItem(type.getName());
+    }
+
+    public void restock(final Date date) {
+        final String milk = ConstraintType.Milk.getName();
+        restockByType(milk);
+
+        if (DELIVERY_DAYS.contains(date.getDayOfWeek()))
+            for (final String type : products.keySet())
+                if (!type.equals(milk))
+                    restockByType(type);
     }
 
     private void buildInventoryFromFile() {
@@ -54,16 +80,62 @@ public class Inventory {
             final Cost salesPrice = new Cost(record.get(BASE_PRICE))
                 .multiply(salesPriceMultiplier);
 
-            productTypeList.add(new Product(record.get(SKU), salesPrice));
+            productTypeList.add(new Product(
+                record.get(SKU),
+                itemType,
+                salesPrice
+            ));
         });
     }
 
-    private void populateMiscProducts() {
-        miscProductsList = products
+    private Optional<Product> getItem(final String type) {
+        final List<Product> productsOfType = products
+            .get(type)
+            .stream()
+            .filter(p -> p.isInStock())
+            .collect(Collectors.toList());
+
+        if (productsOfType.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(Random.randomElement(productsOfType));
+    }
+
+    private List<Product> getMiscProducts() {
+        return products
             .keySet()
             .stream()
             .filter(type -> !ConstraintType.contains(type))
             .flatMap(type -> products.get(type).stream())
             .collect(Collectors.toList());
+    }
+
+    private int getStockTarget(final String itemType) {
+        int stockTarget;
+        int productCount;
+
+        if (ConstraintType.contains(itemType)) {
+            stockTarget = ConstraintType.find(itemType).getStockTarget();
+            productCount = products.get(itemType).size();
+        }
+        else {
+            stockTarget = DEFAULT_STOCK_TARGET;
+            productCount = miscProductsList.size();
+        }
+
+        return stockTarget / productCount;
+    }
+
+    private void restockAll() {
+        for (final String type : products.keySet())
+            restockByType(type);
+    }
+
+    private void restockByType(final String itemType) {
+        final List<Product> productList = products.get(itemType);
+        final int stockTarget = getStockTarget(itemType);
+
+        for (final Product product : productList)
+            product.restock(stockTarget);
     }
 }

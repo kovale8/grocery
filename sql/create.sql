@@ -12,5 +12,7 @@ CREATE TABLE sales (
   "date" TEXT,
   "customer" INTEGER,
   "sku" TEXT,
-  "sale_price" REAL
+  "sale_price" REAL,
+  "stock" INTEGER,
+  "cases_ordered" INTEGER
 );

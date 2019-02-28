@@ -1,5 +1,7 @@
 package grocery;
 
+import java.util.Optional;
+
 public class Main {
 
     // Customer properties
@@ -43,6 +45,8 @@ public class Main {
 
     public static void main(final String... args) {
         for (int day = 1; day <= DAYS_TO_RUN; day++, date.nextDay()) {
+            inventory.restock(date);
+
             int customerTotal = Random.randRange(CUSTOMERS_LOW, CUSTOMERS_HIGH);
             if (date.isWeekend())
                 customerTotal += WEEKEND_INCREASE;
@@ -95,21 +99,30 @@ public class Main {
     }
 
     private static void buyItem() {
-        recordSale(inventory.getItem());
+        Optional<Product> optProduct;
+
+        do {
+            optProduct = inventory.getItem();
+        } while (!optProduct.isPresent());
+
+        recordSale(optProduct.get());
     }
 
     private static void buyItem(final ConstraintType type) {
-        recordSale(inventory.getItem(type));
+        inventory.getItem(type).ifPresent(product -> recordSale(product));
     }
 
     private static void recordSale(final Product product) {
+        product.purchase();
         itemCount++;
 
         records.writeRecord(
-            date.toString(),
-            Integer.toString(customerCount),
+            date,
+            customerCount,
             product.getSKU(),
-            product.getPrice().toString()
+            product.getPrice(),
+            product.getStock(),
+            product.getCasesOrdered()
         );
     }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class RecordWriter {
 
@@ -39,9 +40,13 @@ public class RecordWriter {
         }
     }
 
-    public void writeRecord(final String... values) {
+    public void writeRecord(final Object... values) {
+        String[] strValues = Arrays
+            .stream(values)
+            .map(v -> String.valueOf(v))
+            .toArray(String[]::new);
         try {
-            writer.write(String.join(DELIMITER, values));
+            writer.write(String.join(DELIMITER, strValues));
             writer.newLine();
         }
         catch (IOException ex) {
