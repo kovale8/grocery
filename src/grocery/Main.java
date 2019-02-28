@@ -1,5 +1,7 @@
 package grocery;
 
+import java.util.Optional;
+
 public class Main {
 
     // Customer properties
@@ -97,11 +99,17 @@ public class Main {
     }
 
     private static void buyItem() {
-        recordSale(inventory.getItem());
+        Optional<Product> optProduct;
+
+        do {
+            optProduct = inventory.getItem();
+        } while (!optProduct.isPresent());
+
+        recordSale(optProduct.get());
     }
 
     private static void buyItem(final ConstraintType type) {
-        recordSale(inventory.getItem(type));
+        inventory.getItem(type).ifPresent(product -> recordSale(product));
     }
 
     private static void recordSale(final Product product) {

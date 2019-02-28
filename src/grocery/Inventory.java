@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Inventory {
@@ -41,16 +42,16 @@ public class Inventory {
         restockAll();
     }
 
-    public Product getItem() {
+    public Optional<Product> getItem() {
         final Product randomProduct = Random.randomElement(miscProductsList);
 
         if (randomProduct.isInStock())
-            return randomProduct;
+            return Optional.of(randomProduct);
 
         return getItem(randomProduct.getType());
     }
 
-    public Product getItem(final ConstraintType type) {
+    public Optional<Product> getItem(final ConstraintType type) {
         return getItem(type.getName());
     }
 
@@ -87,20 +88,17 @@ public class Inventory {
         });
     }
 
-    private Product getItem(final String type) {
+    private Optional<Product> getItem(final String type) {
         final List<Product> productsOfType = products
             .get(type)
             .stream()
             .filter(p -> p.isInStock())
             .collect(Collectors.toList());
 
-        if (productsOfType.isEmpty()) {
-            System.out.println(String.format(
-                "Products of type '%s' are out of stock", type));
-            System.exit(1);
-        }
+        if (productsOfType.isEmpty())
+            return Optional.empty();
 
-        return Random.randomElement(productsOfType);
+        return Optional.of(Random.randomElement(productsOfType));
     }
 
     private List<Product> getMiscProducts() {
